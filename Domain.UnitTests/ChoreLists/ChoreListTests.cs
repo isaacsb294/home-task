@@ -20,7 +20,7 @@ public class ChoreListTests : BaseTest
     }
     
     [Fact]
-    public void Create_SetsParamsCorrectly()
+    public void Create_AssignsParamsCorrectly()
     {
         var choreList = ChoreList.Create(
             ChoreListData.Name,
@@ -38,7 +38,7 @@ public class ChoreListTests : BaseTest
         {
             ChoreList.Create("", "");
         }
-        catch (ArgumentException exception)
+        catch (ArgumentNullException exception)
         {
             exception.ParamName.Should().Be("name");
         }
@@ -51,7 +51,7 @@ public class ChoreListTests : BaseTest
         {
             ChoreList.Create(ChoreListData.Name, "");
         }
-        catch (ArgumentException exception)
+        catch (ArgumentNullException exception)
         {
             exception.ParamName.Should().Be("description");
         }

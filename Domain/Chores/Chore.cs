@@ -1,4 +1,5 @@
-﻿using Shared;
+﻿using Domain.Products;
+using Shared;
 
 namespace Domain.Chores;
 
@@ -15,6 +16,8 @@ public class Chore : Entity
     public bool IsCompleted { get; private set; } = false;
     public ChoreCategory? Category { get; private set; }
     public DayOfWeek? DayOfWeek { get; private set; }
+    private readonly List<Product> _products = [];
+    public IReadOnlyCollection<Product> Products => _products;
 
     public static Chore Create(
         string name,
@@ -48,6 +51,26 @@ public class Chore : Entity
         chore.Raise(new ChoreCreatedDomainEvent(chore.Id));
         
         return chore;
+    }
+
+    public void AddProduct(Product product)
+    {
+        if (_products.Contains(product))
+        {
+            return;
+        }
+        
+        _products.Add(product);
+    }
+
+    public void RemoveProduct(Product product)
+    {
+        if (!_products.Contains(product))
+        {
+            throw new InvalidOperationException("Product not found");
+        }
+        
+        _products.Remove(product);
     }
 
     public void MarkComplete()

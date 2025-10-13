@@ -8,17 +8,6 @@ namespace Domain.UnitTests.Chores;
 
 public class ChoreTests : BaseTest
 {
-    private static Chore CreateTestChore()
-    {
-        return Chore.Create(
-            ChoreData.Name,
-            ChoreData.Description,
-            ChoreData.Priority,
-            ChoreData.Frequency,
-            ChoreData.Category,
-            ChoreData.DayOfWeek);
-    }
-
     [Fact]
     public void Create_AssignsPropertyValues()
     {
@@ -27,6 +16,7 @@ public class ChoreTests : BaseTest
         chore.Name.Should().Be(ChoreData.Name);
         chore.Description.Should().Be(ChoreData.Description);
         chore.Priority.Should().Be(ChoreData.Priority);
+        chore.Category.Should().Be(ChoreData.Category);
         chore.Frequency.Should().Be(ChoreData.Frequency);
         chore.DayOfWeek.Should().Be(ChoreData.DayOfWeek);
     }
@@ -90,61 +80,7 @@ public class ChoreTests : BaseTest
         Chore chore = CreateTestChore();
 
         var domainEvent = AssertDomainEventWasRaised<ChoreCreatedDomainEvent>(chore);
-
-        domainEvent.Should().NotBeNull();
         domainEvent.ChoreId.Should().Be(chore.Id);
-    }
-
-    [Fact]
-    public void MarkComplete_RaisesDomainEvent()
-    {
-        Chore chore = CreateTestChore();
-
-        chore.MarkComplete();
-
-        var domainEvent = AssertDomainEventWasRaised<ChoreCompletedDomainEvent>(chore);
-
-        domainEvent.ChoreId.Should().Be(chore.Id);
-    }
-
-    [Fact]
-    public void MarkComplete_DoesNotRaiseDomainEvent_WhenAlreadyComplete()
-    {
-        Chore chore = CreateTestChore();
-
-        chore.MarkComplete();
-        chore.MarkComplete();
-
-        chore.DomainEvents
-            .OfType<ChoreCompletedDomainEvent>()
-            .Should()
-            .HaveCount(1);
-    }
-
-    [Fact]
-    public void MarkIncomplete_RaisesDomainEvent()
-    {
-        Chore chore = CreateTestChore();
-
-        chore.MarkComplete();
-        chore.MarkIncomplete();
-
-        var domainEvent = AssertDomainEventWasRaised<ChoreIncompleteDomainEvent>(chore);
-
-        domainEvent.ChoreId.Should().Be(chore.Id);
-    }
-
-    [Fact]
-    public void MarkIncomplete_DoesNotRaiseDomainEvent_WhenAlreadyIncomplete()
-    {
-        Chore chore = CreateTestChore();
-
-        chore.MarkIncomplete();
-
-        chore.DomainEvents
-            .OfType<ChoreIncompleteDomainEvent>()
-            .Should()
-            .BeEmpty();
     }
 
     [Fact]

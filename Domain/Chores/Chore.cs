@@ -13,11 +13,12 @@ public class Chore : Entity
     public string Description { get; private set; } = string.Empty;
     public ChorePriority Priority { get; private set; }
     public ChoreFrequency Frequency { get; private set; }
-    public bool IsCompleted { get; private set; } = false;
     public ChoreCategory? Category { get; private set; }
     public DayOfWeek? DayOfWeek { get; private set; }
     private readonly List<Product> _products = [];
     public IReadOnlyCollection<Product> Products => _products;
+    
+    public List<ChoreUserTag> UserTags { get; init;  } = [];
 
     public static Chore Create(
         string name,
@@ -71,27 +72,5 @@ public class Chore : Entity
         }
         
         _products.Remove(product);
-    }
-
-    public void MarkComplete()
-    {
-        if (IsCompleted)
-        {
-            return;
-        }
-        
-        IsCompleted = true;
-        Raise(new ChoreCompletedDomainEvent(Id));
-    }
-    
-    public void MarkIncomplete()
-    {
-        if (!IsCompleted)
-        {
-            return;
-        }
-        
-        IsCompleted = false;
-        Raise(new ChoreIncompleteDomainEvent(Id));
     }
 }

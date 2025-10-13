@@ -1,10 +1,23 @@
-﻿using Shared;
+﻿using Domain.Chores;
+using Domain.UnitTests.Chores;
+using Shared;
 
 namespace Domain.UnitTests.Infrastructure;
 
 public abstract class BaseTest
 {
-    public static T AssertDomainEventWasRaised<T>(Entity entity)
+    protected static Chore CreateTestChore()
+    {
+        return Chore.Create(
+            ChoreData.Name,
+            ChoreData.Description,
+            ChoreData.Priority,
+            ChoreData.Frequency,
+            ChoreData.Category,
+            ChoreData.DayOfWeek);
+    }
+    
+    protected static T AssertDomainEventWasRaised<T>(Entity entity)
         where T : IDomainEvent
     {
         T? domainEvent = entity.DomainEvents

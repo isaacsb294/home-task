@@ -1,6 +1,5 @@
 ﻿using Domain.ChoreLists;
 using Domain.Chores;
-using Domain.UnitTests.Chores;
 using Domain.UnitTests.Infrastructure;
 using FluentAssertions;
 
@@ -8,24 +7,13 @@ namespace Domain.UnitTests.ChoreLists;
 
 public class ChoreListTests : BaseTest
 {
-    private static Chore CreateTestChore()
-    {
-        return Chore.Create(
-            ChoreData.Name,
-            ChoreData.Description,
-            ChoreData.Priority,
-            ChoreData.Frequency,
-            ChoreData.Category,
-            ChoreData.DayOfWeek);
-    }
-    
     [Fact]
     public void Create_AssignsParamsCorrectly()
     {
         var choreList = ChoreList.Create(
             ChoreListData.Name,
             ChoreListData.Description);
-        
+
         choreList.Name.Should().Be(ChoreListData.Name);
         choreList.Description.Should().Be(ChoreListData.Description);
         choreList.Chores.Should().BeEmpty();
@@ -63,22 +51,34 @@ public class ChoreListTests : BaseTest
         var choreList = ChoreList.Create(
             ChoreListData.Name,
             ChoreListData.Description);
-        
+
         var domainEvent = AssertDomainEventWasRaised<ChoreListCreatedDomainEvent>(choreList);
         domainEvent.ChoreListId.Should().Be(choreList.Id);
     }
 
     [Fact]
-    public void AddChore_ChoreIsAdded_AndDomainEventRaised()
+    public void AddChore_ChoreIsAdded()
     {
         var choreList = ChoreList.Create(
             ChoreListData.Name,
             ChoreListData.Description);
-        
+
         Chore chore = CreateTestChore();
 
         choreList.AddChore(chore);
         choreList.Chores.Should().Contain(chore);
+    }
+
+    [Fact]
+    public void AddChore_RaisesDomainEvent()
+    {
+        var choreList = ChoreList.Create(
+            ChoreListData.Name,
+            ChoreListData.Description);
+
+        Chore chore = CreateTestChore();
+
+        choreList.AddChore(chore);
 
         var domainEvent = AssertDomainEventWasRaised<ChoreAddedToListDomainEvent>(choreList);
         domainEvent.ChoreListId.Should().Be(choreList.Id);
@@ -86,20 +86,35 @@ public class ChoreListTests : BaseTest
     }
 
     [Fact]
-    public void RemoveChore_ChoreIsRemoved_AndDomainEventRaised()
+    public void RemoveChore_ChoreIsRemoved()
     {
         var choreList = ChoreList.Create(
             ChoreListData.Name,
             ChoreListData.Description);
-        
+
         Chore chore = CreateTestChore();
 
         choreList.AddChore(chore);
         choreList.Chores.Should().Contain(chore);
-        
+
         choreList.RemoveChore(chore);
         choreList.Chores.Should().BeEmpty();
-        
+    }
+
+    [Fact]
+    public void RemoveChore_RaisesDomainEvent()
+    {
+        var choreList = ChoreList.Create(
+            ChoreListData.Name,
+            ChoreListData.Description);
+
+        Chore chore = CreateTestChore();
+
+        choreList.AddChore(chore);
+        choreList.Chores.Should().Contain(chore);
+
+        choreList.RemoveChore(chore);
+
         var domainEvent = AssertDomainEventWasRaised<ChoreRemovedFromListDomainEvent>(choreList);
         domainEvent.ChoreListId.Should().Be(choreList.Id);
         domainEvent.ChoreId.Should().Be(chore.Id);

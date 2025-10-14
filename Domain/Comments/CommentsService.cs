@@ -1,4 +1,5 @@
 ﻿using Domain.ChoreInstances;
+using Domain.Comments.Events;
 using Domain.Users;
 
 namespace Domain.Comments;

@@ -1,4 +1,5 @@
 ﻿using Domain.Products;
+using Domain.Products.Events;
 using Domain.UnitTests.Infrastructure;
 using FluentAssertions;
 using Shared;
@@ -11,6 +12,7 @@ public class ProductTests : BaseTest
     public void Create_AssignsParamsCorrectly()
     {
         var product = Product.Create(
+            CreateTestUser().Id,
             ProductData.Name,
             ProductData.Link,
             ProductData.Price);
@@ -26,6 +28,7 @@ public class ProductTests : BaseTest
         try
         {
             Product.Create(
+                CreateTestUser().Id,
                 "",
                 "",
                 Price.Zero);
@@ -42,6 +45,7 @@ public class ProductTests : BaseTest
         try
         {
             Product.Create(
+                CreateTestUser().Id,
                 ProductData.Name,
                 "",
                 Price.Zero);
@@ -56,6 +60,7 @@ public class ProductTests : BaseTest
     public void UpdateLastKnownPrice_ShouldRaiseDomainEvent()
     {
         var product = Product.Create(
+            CreateTestUser().Id,
             ProductData.Name,
             ProductData.Link,
             ProductData.Price);

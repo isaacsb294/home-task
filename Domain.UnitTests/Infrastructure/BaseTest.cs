@@ -1,14 +1,22 @@
-﻿using Domain.Chores;
+﻿using System.Net.Mail;
+using Domain.Chores;
 using Domain.UnitTests.Chores;
+using Domain.Users;
 using Shared;
 
 namespace Domain.UnitTests.Infrastructure;
 
 public abstract class BaseTest
 {
+    protected static User CreateTestUser()
+    {
+        return User.Create("John", "Doe", new MailAddress("johndoe@test.com"));
+    }
     protected static Chore CreateTestChore()
     {
         return Chore.Create(
+            ChoreData.UserId,
+            ChoreData.ChoreListId,
             ChoreData.Name,
             ChoreData.Description,
             ChoreData.Priority,

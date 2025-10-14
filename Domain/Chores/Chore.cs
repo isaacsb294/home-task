@@ -1,4 +1,6 @@
-﻿using Domain.Products;
+﻿using Domain.Chores.Events;
+using Domain.Products;
+using Domain.Users;
 using Shared;
 
 namespace Domain.Chores;
@@ -9,18 +11,20 @@ public class Chore : Entity
     {
     }
 
+    public Guid UserId { get; private set; }
+    public Guid ChoreListId { get; private set; }
     public string Name { get; private set; } = string.Empty;
     public string Description { get; private set; } = string.Empty;
     public ChorePriority Priority { get; private set; }
     public ChoreFrequency Frequency { get; private set; }
     public ChoreCategory? Category { get; private set; }
     public DayOfWeek? DayOfWeek { get; private set; }
-    private readonly List<Product> _products = [];
-    public IReadOnlyCollection<Product> Products => _products;
-    
-    public List<ChoreUserTag> UserTags { get; init;  } = [];
+    public List<Product> Products { get; init; } = [];
+    public List<User> ResponsiblePersons { get; init; } = [];
 
     public static Chore Create(
+        Guid userId,
+        Guid choreListId,
         string name,
         string description,
         ChorePriority? priority,
@@ -41,6 +45,8 @@ public class Chore : Entity
         var chore = new Chore
         {
             Id = Guid.CreateVersion7(),
+            UserId = userId,
+            ChoreListId = choreListId,
             Name = name,
             Description = description,
             Priority = priority ?? ChorePriority.Low,
@@ -48,29 +54,9 @@ public class Chore : Entity
             Category = category,
             DayOfWeek = dayOfWeek
         };
-        
+
         chore.Raise(new ChoreCreatedDomainEvent(chore.Id));
-        
+
         return chore;
-    }
-
-    public void AddProduct(Product product)
-    {
-        if (_products.Contains(product))
-        {
-            return;
-        }
-        
-        _products.Add(product);
-    }
-
-    public void RemoveProduct(Product product)
-    {
-        if (!_products.Contains(product))
-        {
-            throw new InvalidOperationException("Product not found");
-        }
-        
-        _products.Remove(product);
     }
 }

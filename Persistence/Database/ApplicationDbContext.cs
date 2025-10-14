@@ -1,6 +1,8 @@
 ﻿using Domain.ChoreInstances;
 using Domain.ChoreLists;
+using Domain.ChoreProducts;
 using Domain.Chores;
+using Domain.ChoreUsers;
 using Domain.Comments;
 using Domain.Products;
 using Domain.Users;
@@ -16,8 +18,9 @@ public class ApplicationDbContext(
 {
     public DbSet<ChoreList> ChoreLists { get; set; }
     public DbSet<Chore> Chore { get; set; }
+    public DbSet<ChoreProduct>  ChoreProducts { get; set; }
+    public DbSet<ChoreUser> ChoreUsers { get; set; }
     public DbSet<ChoreInstance> ChoreInstances { get; set; }
-    public DbSet<ChoreUserTag> ChoreUserTags { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<User> Users { get; set; }
@@ -25,6 +28,7 @@ public class ApplicationDbContext(
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        modelBuilder.HasDefaultSchema(Schemas.Application);
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

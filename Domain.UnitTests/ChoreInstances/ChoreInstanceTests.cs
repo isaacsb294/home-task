@@ -1,4 +1,5 @@
 ﻿using Domain.ChoreInstances;
+using Domain.ChoreInstances.Events;
 using Domain.Chores;
 using Domain.UnitTests.Chores;
 using Domain.UnitTests.Infrastructure;

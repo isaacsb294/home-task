@@ -1,5 +1,5 @@
 ﻿using Shared;
 
-namespace Domain.ChoreLists;
+namespace Domain.ChoreLists.Events;
 
 public record ChoreListCreatedDomainEvent(Guid ChoreListId) : IDomainEvent;

@@ -1,6 +1,9 @@
-﻿using Domain.ChoreLists;
+﻿using System.Net.Mail;
+using Domain.ChoreLists;
+using Domain.ChoreLists.Events;
 using Domain.Chores;
 using Domain.UnitTests.Infrastructure;
+using Domain.Users;
 using FluentAssertions;
 
 namespace Domain.UnitTests.ChoreLists;
@@ -11,6 +14,7 @@ public class ChoreListTests : BaseTest
     public void Create_AssignsParamsCorrectly()
     {
         var choreList = ChoreList.Create(
+            CreateTestUser().Id,
             ChoreListData.Name,
             ChoreListData.Description);
 
@@ -24,7 +28,7 @@ public class ChoreListTests : BaseTest
     {
         try
         {
-            ChoreList.Create("", "");
+            ChoreList.Create(CreateTestUser().Id, "", "");
         }
         catch (ArgumentNullException exception)
         {
@@ -37,7 +41,7 @@ public class ChoreListTests : BaseTest
     {
         try
         {
-            ChoreList.Create(ChoreListData.Name, "");
+            ChoreList.Create(CreateTestUser().Id, ChoreListData.Name, "");
         }
         catch (ArgumentNullException exception)
         {
@@ -49,6 +53,7 @@ public class ChoreListTests : BaseTest
     public void Create_RaisesDomainEvent()
     {
         var choreList = ChoreList.Create(
+            CreateTestUser().Id,
             ChoreListData.Name,
             ChoreListData.Description);
 
@@ -60,6 +65,7 @@ public class ChoreListTests : BaseTest
     public void AddChore_ChoreIsAdded()
     {
         var choreList = ChoreList.Create(
+            CreateTestUser().Id,
             ChoreListData.Name,
             ChoreListData.Description);
 
@@ -73,6 +79,7 @@ public class ChoreListTests : BaseTest
     public void AddChore_RaisesDomainEvent()
     {
         var choreList = ChoreList.Create(
+            CreateTestUser().Id,
             ChoreListData.Name,
             ChoreListData.Description);
 
@@ -89,6 +96,7 @@ public class ChoreListTests : BaseTest
     public void RemoveChore_ChoreIsRemoved()
     {
         var choreList = ChoreList.Create(
+            CreateTestUser().Id,
             ChoreListData.Name,
             ChoreListData.Description);
 
@@ -104,7 +112,9 @@ public class ChoreListTests : BaseTest
     [Fact]
     public void RemoveChore_RaisesDomainEvent()
     {
+        var user = User.Create("John", "Doe", new MailAddress("johndoe@test.com"));
         var choreList = ChoreList.Create(
+            user.Id,
             ChoreListData.Name,
             ChoreListData.Description);
 

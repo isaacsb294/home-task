@@ -1,4 +1,5 @@
-﻿using Domain.Chores;
+﻿using Domain.ChoreInstances.Events;
+using Domain.Chores;
 using Domain.Comments;
 using Shared;
 
@@ -24,8 +25,6 @@ public class ChoreInstance : Entity
     public IReadOnlyCollection<Comment> Comments => _comments;
     public bool IsCompleted { get; private set; }
     public Uri[] ImageLinks { get; init; } = [];
-
-    public Chore Chore { get; private set; } = null!;
 
     public void AddComment(Comment comment)
     {

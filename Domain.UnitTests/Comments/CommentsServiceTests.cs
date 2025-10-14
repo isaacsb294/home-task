@@ -1,5 +1,6 @@
 ﻿using Domain.ChoreInstances;
 using Domain.Comments;
+using Domain.Comments.Events;
 using Domain.UnitTests.Infrastructure;
 using Domain.UnitTests.Users;
 using Domain.Users;

@@ -1,7 +1,6 @@
 ﻿using Domain.Chores;
-using Domain.Products;
+using Domain.Chores.Events;
 using Domain.UnitTests.Infrastructure;
-using Domain.UnitTests.Products;
 using FluentAssertions;
 
 namespace Domain.UnitTests.Chores;
@@ -25,6 +24,8 @@ public class ChoreTests : BaseTest
     public void Create_AppliesCorrectDefaults_WhenNotProvided()
     {
         var chore = Chore.Create(
+            ChoreData.UserId,
+            ChoreData.ChoreListId,
             ChoreData.Name,
             ChoreData.Description,
             null,
@@ -42,6 +43,8 @@ public class ChoreTests : BaseTest
         try
         {
             Chore.Create(
+                ChoreData.UserId,
+                ChoreData.ChoreListId,
                 "",
                 "",
                 null,
@@ -61,6 +64,8 @@ public class ChoreTests : BaseTest
         try
         {
             Chore.Create(
+                ChoreData.UserId,
+                ChoreData.ChoreListId,
                 ChoreData.Name,
                 "",
                 null,
@@ -81,53 +86,5 @@ public class ChoreTests : BaseTest
 
         var domainEvent = AssertDomainEventWasRaised<ChoreCreatedDomainEvent>(chore);
         domainEvent.ChoreId.Should().Be(chore.Id);
-    }
-
-    [Fact]
-    public void AddProduct_AddsProduct()
-    {
-        Chore chore = CreateTestChore();
-        var product = Product.Create(
-            ProductData.Name,
-            ProductData.Link,
-            ProductData.Price);
-
-        chore.AddProduct(product);
-
-        chore.Products.FirstOrDefault(p => p.Id == product.Id).Should().NotBeNull();
-    }
-
-    [Fact]
-    public void RemoveProduct_RemovesProduct()
-    {
-        Chore chore = CreateTestChore();
-        var product = Product.Create(
-            ProductData.Name,
-            ProductData.Link,
-            ProductData.Price);
-
-        chore.AddProduct(product);
-        chore.RemoveProduct(product);
-
-        chore.Products.Should().BeEmpty();
-    }
-
-    [Fact]
-    public void RemoveProduct_Throws_WhenProductDoesntExist()
-    {
-        Chore chore = CreateTestChore();
-        var product = Product.Create(
-            ProductData.Name,
-            ProductData.Link,
-            ProductData.Price);
-
-        try
-        {
-            chore.RemoveProduct(product);
-        }
-        catch (InvalidOperationException exception)
-        {
-            exception.Message.Should().Be("Product not found");
-        }
     }
 }

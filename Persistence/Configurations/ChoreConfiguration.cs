@@ -1,0 +1,30 @@
+﻿using Domain.ChoreProducts;
+using Domain.Chores;
+using Domain.ChoreUsers;
+using Domain.Users;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Persistence.Configurations;
+
+public sealed class ChoreConfiguration : IEntityTypeConfiguration<Chore>
+{
+    public void Configure(EntityTypeBuilder<Chore> builder)
+    {
+        builder.ToTable("chores");
+        
+        builder.HasKey(chore => chore.Id);
+
+        builder.HasMany(chore => chore.Products)
+            .WithMany()
+            .UsingEntity<ChoreProduct>();
+
+        builder.HasMany(chore => chore.ResponsiblePersons)
+            .WithMany()
+            .UsingEntity<ChoreUser>();
+        
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(chore => chore.UserId);
+    }
+}

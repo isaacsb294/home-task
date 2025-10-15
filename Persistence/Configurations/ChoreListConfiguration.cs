@@ -11,8 +11,6 @@ public sealed class ChoreListConfiguration : IEntityTypeConfiguration<Chore>
         builder.ToTable("chore_lists");
         
         builder.HasKey(cl => cl.Id);
-        
-        
 
         builder.HasMany<Chore>()
             .WithOne()

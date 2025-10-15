@@ -1,11 +1,10 @@
-﻿using Domain.Users;
-using Shared;
+﻿using Shared;
 
 namespace Domain.Comments;
 
 public class Comment : Entity
 {
-    internal Comment(string content,  Guid userId)
+    internal Comment(Guid userId, Guid choreInstanceId, string content)
     {
         if (string.IsNullOrWhiteSpace(content))
         {
@@ -15,19 +14,15 @@ public class Comment : Entity
         Id = Guid.CreateVersion7();
         Content = content;
         UserId = userId;
+        ChoreInstanceId = choreInstanceId;
         PublishedOn = DateTime.UtcNow;
     }
     
-    private Comment()
-    {
-    }
-
-    public string Content { get; private set; } = string.Empty;
     public Guid UserId { get; init; }
+    public Guid ChoreInstanceId { get; init; }
+    public string Content { get; private set; }
     public DateTime PublishedOn { get; private set; }
     public DateTime EditedAt { get; private set; }
-
-    public virtual User User { get; init; } = null!;
 
     public void EditComment(string content)
     {

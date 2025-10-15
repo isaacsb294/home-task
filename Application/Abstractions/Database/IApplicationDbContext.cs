@@ -11,7 +11,7 @@ namespace Application.Abstractions.Database;
 public interface IApplicationDbContext
 {
     DbSet<ChoreList> ChoreLists { get; }
-    DbSet<Chore> Chore { get; }
+    DbSet<Chore> Chores { get; }
     DbSet<ChoreInstance> ChoreInstances { get; }
     DbSet<Comment> Comments { get; }
     DbSet<Product> Products { get; }

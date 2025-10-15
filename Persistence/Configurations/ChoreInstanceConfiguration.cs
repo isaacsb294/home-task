@@ -1,5 +1,6 @@
 ﻿using Domain.ChoreInstances;
 using Domain.Chores;
+using Domain.Comments;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -15,6 +16,11 @@ public sealed class ChoreInstanceConfiguration : IEntityTypeConfiguration<ChoreI
 
         builder.HasOne<Chore>()
             .WithMany()
-            .HasForeignKey(ci => ci.ChoreId);
+            .HasForeignKey(ci => ci.ChoreId)
+            .IsRequired();
+        
+        builder.HasMany<Comment>()
+            .WithOne()
+            .HasForeignKey(comment => comment.ChoreInstanceId);
     }
 }

@@ -14,7 +14,7 @@ public abstract class BaseTest
     }
     protected static Chore CreateTestChore()
     {
-        return Chore.Create(
+        Result<Chore> result = Chore.Create(
             ChoreData.UserId,
             ChoreData.ChoreListId,
             ChoreData.Name,
@@ -23,6 +23,8 @@ public abstract class BaseTest
             ChoreData.Frequency,
             ChoreData.Category,
             ChoreData.DayOfWeek);
+
+        return result.Value;
     }
     
     protected static T AssertDomainEventWasRaised<T>(Entity entity)

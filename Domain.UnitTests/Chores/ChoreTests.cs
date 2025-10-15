@@ -1,7 +1,10 @@
 ﻿using Domain.Chores;
 using Domain.Chores.Events;
+using Domain.Products;
 using Domain.UnitTests.Infrastructure;
+using Domain.Users;
 using FluentAssertions;
+using Shared;
 
 namespace Domain.UnitTests.Chores;
 
@@ -23,7 +26,7 @@ public class ChoreTests : BaseTest
     [Fact]
     public void Create_AppliesCorrectDefaults_WhenNotProvided()
     {
-        var chore = Chore.Create(
+        Result<Chore> result = Chore.Create(
             ChoreData.UserId,
             ChoreData.ChoreListId,
             ChoreData.Name,
@@ -33,6 +36,8 @@ public class ChoreTests : BaseTest
             null,
             null);
 
+        Chore chore = result.Value;
+
         chore.Frequency.Should().Be(ChoreFrequency.Daily);
         chore.Priority.Should().Be(ChorePriority.Low);
     }
@@ -40,51 +45,226 @@ public class ChoreTests : BaseTest
     [Fact]
     public void Create_Throws_WhenNameIsWhiteSpace()
     {
-        try
-        {
-            Chore.Create(
-                ChoreData.UserId,
-                ChoreData.ChoreListId,
-                "",
-                "",
-                null,
-                null,
-                null,
-                null);
-        }
-        catch (ArgumentNullException exception)
-        {
-            exception.ParamName.Should().Be("name");
-        }
+        Result result = Chore.Create(
+            ChoreData.UserId,
+            ChoreData.ChoreListId,
+            "",
+            "",
+            null,
+            null,
+            null,
+            null);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be(ChoreErrors.BlankName.Code);
     }
 
     [Fact]
-    public void Create_Throws_WhenDescriptionIsWhiteSpace()
+    public void Create_ReturnsError_WhenDescriptionIsWhiteSpace()
     {
-        try
-        {
-            Chore.Create(
-                ChoreData.UserId,
-                ChoreData.ChoreListId,
-                ChoreData.Name,
-                "",
-                null,
-                null,
-                null,
-                null);
-        }
-        catch (ArgumentNullException exception)
-        {
-            exception.ParamName.Should().Be("description");
-        }
+        Result result = Chore.Create(
+            ChoreData.UserId,
+            ChoreData.ChoreListId,
+            ChoreData.Name,
+            "",
+            null,
+            null,
+            null,
+            null);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be(ChoreErrors.BlankDescription.Code);
     }
 
     [Fact]
-    public void Create_RaisesDomainEvent()
+    public void Create_RaisesDomainEvent_WhenSuccessful()
     {
         Chore chore = CreateTestChore();
 
         var domainEvent = AssertDomainEventWasRaised<ChoreCreatedDomainEvent>(chore);
         domainEvent.ChoreId.Should().Be(chore.Id);
+    }
+
+    [Fact]
+    public void AddProduct_CreatesProduct_WhenSuccessful()
+    {
+        Chore chore = CreateTestChore();
+
+        Result result = chore.AddProduct(
+            ProductData.Name,
+            ProductData.Link,
+            ProductData.LastKnownPrice);
+
+        result.IsSuccess.Should().BeTrue();
+        chore.Products.Count.Should().Be(1);
+    }
+
+    [Fact]
+    public void AddProduct_RaisesDomainEvent_WhenSuccessful()
+    {
+        Chore chore = CreateTestChore();
+
+        chore.AddProduct(
+            ProductData.Name,
+            ProductData.Link,
+            ProductData.LastKnownPrice);
+
+        Product product = chore.Products.First();
+        var domainEvent = AssertDomainEventWasRaised<ChoreProductAddedDomainEvent>(chore);
+
+        domainEvent.ChoreId.Should().Be(chore.Id);
+        domainEvent.ProductId.Should().Be(product.Id);
+    }
+
+    [Fact]
+    public void AddProduct_ReturnsError_WhenNameIsWhiteSpace()
+    {
+        Chore chore = CreateTestChore();
+
+        Result result = chore.AddProduct(
+            "",
+            ProductData.Link,
+            ProductData.LastKnownPrice);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be(ProductErrors.BlankName.Code);
+    }
+
+    [Fact]
+    public void AddProduct_ReturnsError_WhenLinkIsWhiteSpace()
+    {
+        Chore chore = CreateTestChore();
+
+        Result result = chore.AddProduct(
+            ProductData.Name,
+            "",
+            ProductData.LastKnownPrice);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be(ProductErrors.BlankLink.Code);
+    }
+
+    [Fact]
+    public void RemoveProduct_RemovesProduct_WhenSuccessful()
+    {
+        Chore chore = CreateTestChore();
+
+        chore.AddProduct(
+            ProductData.Name,
+            ProductData.Link,
+            ProductData.LastKnownPrice);
+
+        Product product = chore.Products.First();
+        Result result = chore.RemoveProduct(product.Id);
+
+        result.IsSuccess.Should().BeTrue();
+    }
+
+    [Fact]
+    public void RemoveProduct_RaisesDomainEvent_WhenSuccessful()
+    {
+        Chore chore = CreateTestChore();
+
+        chore.AddProduct(
+            ProductData.Name,
+            ProductData.Link,
+            ProductData.LastKnownPrice);
+
+        Product product = chore.Products.First();
+        chore.RemoveProduct(product.Id);
+
+        var domainEvent = AssertDomainEventWasRaised<ChoreProductRemovedDomainEvent>(chore);
+
+        domainEvent.ChoreId.Should().Be(chore.Id);
+        domainEvent.ProductId.Should().Be(product.Id);
+    }
+
+    [Fact]
+    public void RemoveProduct_ReturnsError_WhenNotFound()
+    {
+        Chore chore = CreateTestChore();
+        Result result = chore.RemoveProduct(Guid.CreateVersion7());
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be(ChoreErrors.ProductNotExists.Code);
+    }
+
+    [Fact]
+    public void AddResponsiblePerson_CreatesResponsiblePerson_WhenSuccessful()
+    {
+        Chore chore = CreateTestChore();
+        User user = CreateTestUser();
+
+        Result result = chore.AddResponsiblePerson(user);
+
+        result.IsSuccess.Should().BeTrue();
+        chore.ResponsiblePersons.Count.Should().Be(1);
+        chore.ResponsiblePersons.First().Id.Should().Be(user.Id);
+    }
+
+    [Fact]
+    public void AddResponsiblePerson_RaisesDomainEvent_WhenSuccessful()
+    {
+        Chore chore = CreateTestChore();
+        User user = CreateTestUser();
+
+        chore.AddResponsiblePerson(user);
+
+        var domainEvent = AssertDomainEventWasRaised<ChoreUserAddedDomainEvent>(chore);
+
+        domainEvent.ChoreId.Should().Be(chore.Id);
+        domainEvent.UserId.Should().Be(user.Id);
+    }
+
+    [Fact]
+    public void AddResponsiblePerson_ReturnsError_WhenAlreadyExists()
+    {
+        Chore chore = CreateTestChore();
+        User user = CreateTestUser();
+
+        chore.AddResponsiblePerson(user);
+        Result result = chore.AddResponsiblePerson(user);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be(ChoreErrors.UserExists.Code);
+    }
+
+    [Fact]
+    public void RemoveResponsiblePerson_RemovesResponsiblePerson_WhenSuccessful()
+    {
+        Chore chore = CreateTestChore();
+        User user = CreateTestUser();
+
+        chore.AddResponsiblePerson(user);
+
+        Result result = chore.RemoveResponsiblePerson(user.Id);
+
+        result.IsSuccess.Should().BeTrue();
+        chore.ResponsiblePersons.Count.Should().Be(0);
+    }
+
+    [Fact]
+    public void RemoveResponsiblePerson_RaisesDomainEvent_WhenSuccessful()
+    {
+        Chore chore = CreateTestChore();
+        User user = CreateTestUser();
+
+        chore.AddResponsiblePerson(user);
+        chore.RemoveResponsiblePerson(user.Id);
+
+        var domainEvent = AssertDomainEventWasRaised<ChoreUserRemovedDomainEvent>(chore);
+
+        domainEvent.ChoreId.Should().Be(chore.Id);
+        domainEvent.UserId.Should().Be(user.Id);
+    }
+
+    [Fact]
+    public void RemoveResponsiblePerson_ReturnsError_WhenNotFound()
+    {
+        Chore chore = CreateTestChore();
+        Result result = chore.RemoveResponsiblePerson(Guid.CreateVersion7());
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be(ChoreErrors.UserNotExists.Code);
     }
 }

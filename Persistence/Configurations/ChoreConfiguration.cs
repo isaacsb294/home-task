@@ -1,5 +1,4 @@
-﻿using Domain.ChoreProducts;
-using Domain.Chores;
+﻿using Domain.Chores;
 using Domain.ChoreUsers;
 using Domain.Users;
 using Microsoft.EntityFrameworkCore;
@@ -12,19 +11,20 @@ public sealed class ChoreConfiguration : IEntityTypeConfiguration<Chore>
     public void Configure(EntityTypeBuilder<Chore> builder)
     {
         builder.ToTable("chores");
-        
+
         builder.HasKey(chore => chore.Id);
 
         builder.HasMany(chore => chore.Products)
-            .WithMany()
-            .UsingEntity<ChoreProduct>();
+            .WithOne()
+            .HasForeignKey(product => product.ChoreId);
 
         builder.HasMany(chore => chore.ResponsiblePersons)
             .WithMany()
             .UsingEntity<ChoreUser>();
-        
+
         builder.HasOne<User>()
             .WithMany()
-            .HasForeignKey(chore => chore.UserId);
+            .HasForeignKey(chore => chore.UserId)
+            .IsRequired();
     }
 }

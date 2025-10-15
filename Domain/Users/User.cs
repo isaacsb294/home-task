@@ -1,7 +1,4 @@
 ﻿using System.Net.Mail;
-using Domain.ChoreLists;
-using Domain.Chores;
-using Domain.Comments;
 using Domain.Users.Events;
 using Shared;
 

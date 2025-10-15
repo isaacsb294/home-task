@@ -8,33 +8,32 @@ public class Product : Entity
     private Product()
     {
     }
-
-    public Guid UserId { get; private set; }
+    public Guid ChoreId { get; private set; }
     public string Name { get; private set; } = string.Empty;
     public Uri Link { get; private set; } = null!;
     public Price LastKnownPrice { get; private set; } = Price.Zero;
     public DateOnly LastKnownPriceDate { get; private set; } = DateOnly.FromDateTime(DateTime.UtcNow);
 
-    public static Product Create(
-        Guid userId,
+    internal static Result<Product> Create(
+        Guid choreId,
         string name,
         string link,
         Price lastKnownPrice)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
-            throw new ArgumentNullException(nameof(name));
+            return Result.Failure<Product>(ProductErrors.BlankName);
         }
 
         if (string.IsNullOrWhiteSpace(link))
         {
-            throw new ArgumentNullException(nameof(link));
+            return Result.Failure<Product>(ProductErrors.BlankLink);
         }
 
         return new Product
         {
             Id = Guid.CreateVersion7(),
-            UserId = userId,
+            ChoreId = choreId,
             Name = name,
             Link = new Uri(link),
             LastKnownPrice = lastKnownPrice

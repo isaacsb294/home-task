@@ -90,13 +90,14 @@ public class ChoreTests : BaseTest
     {
         Chore chore = CreateTestChore();
 
-        Result result = chore.AddProduct(
+        Result<Product> result = chore.AddProduct(
             ProductData.Name,
             ProductData.Link,
             ProductData.LastKnownPrice);
 
         result.IsSuccess.Should().BeTrue();
         chore.Products.Count.Should().Be(1);
+        result.Value.Name.Should().Be(ProductData.Name);
     }
 
     [Fact]
@@ -104,12 +105,12 @@ public class ChoreTests : BaseTest
     {
         Chore chore = CreateTestChore();
 
-        chore.AddProduct(
+        Result<Product> result = chore.AddProduct(
             ProductData.Name,
             ProductData.Link,
             ProductData.LastKnownPrice);
 
-        Product product = chore.Products.First();
+        Product product = result.Value;
         var domainEvent = AssertDomainEventWasRaised<ChoreProductAddedDomainEvent>(chore);
 
         domainEvent.ChoreId.Should().Be(chore.Id);
@@ -121,7 +122,7 @@ public class ChoreTests : BaseTest
     {
         Chore chore = CreateTestChore();
 
-        Result result = chore.AddProduct(
+        Result<Product> result = chore.AddProduct(
             "",
             ProductData.Link,
             ProductData.LastKnownPrice);
@@ -135,7 +136,7 @@ public class ChoreTests : BaseTest
     {
         Chore chore = CreateTestChore();
 
-        Result result = chore.AddProduct(
+        Result<Product> result = chore.AddProduct(
             ProductData.Name,
             "",
             ProductData.LastKnownPrice);
@@ -149,15 +150,15 @@ public class ChoreTests : BaseTest
     {
         Chore chore = CreateTestChore();
 
-        chore.AddProduct(
+        Result<Product> result = chore.AddProduct(
             ProductData.Name,
             ProductData.Link,
             ProductData.LastKnownPrice);
 
-        Product product = chore.Products.First();
-        Result result = chore.RemoveProduct(product.Id);
+        Product product = result.Value;
+        Result removeResult = chore.RemoveProduct(product.Id);
 
-        result.IsSuccess.Should().BeTrue();
+        removeResult.IsSuccess.Should().BeTrue();
     }
 
     [Fact]
@@ -165,12 +166,12 @@ public class ChoreTests : BaseTest
     {
         Chore chore = CreateTestChore();
 
-        chore.AddProduct(
+        Result<Product> result = chore.AddProduct(
             ProductData.Name,
             ProductData.Link,
             ProductData.LastKnownPrice);
 
-        Product product = chore.Products.First();
+        Product product = result.Value;
         chore.RemoveProduct(product.Id);
 
         var domainEvent = AssertDomainEventWasRaised<ChoreProductRemovedDomainEvent>(chore);
@@ -190,25 +191,25 @@ public class ChoreTests : BaseTest
     }
 
     [Fact]
-    public void AddResponsiblePerson_CreatesResponsiblePerson_WhenSuccessful()
+    public void AssignUser_CreatesResponsiblePerson_WhenSuccessful()
     {
         Chore chore = CreateTestChore();
         User user = CreateTestUser();
 
-        Result result = chore.AddResponsiblePerson(user);
+        Result result = chore.AssignUser(user);
 
         result.IsSuccess.Should().BeTrue();
-        chore.ResponsiblePersons.Count.Should().Be(1);
-        chore.ResponsiblePersons.First().Id.Should().Be(user.Id);
+        chore.Assignees.Count.Should().Be(1);
+        chore.Assignees.First().Id.Should().Be(user.Id);
     }
 
     [Fact]
-    public void AddResponsiblePerson_RaisesDomainEvent_WhenSuccessful()
+    public void AssignUser_RaisesDomainEvent_WhenSuccessful()
     {
         Chore chore = CreateTestChore();
         User user = CreateTestUser();
 
-        chore.AddResponsiblePerson(user);
+        chore.AssignUser(user);
 
         var domainEvent = AssertDomainEventWasRaised<ChoreUserAddedDomainEvent>(chore);
 
@@ -217,40 +218,40 @@ public class ChoreTests : BaseTest
     }
 
     [Fact]
-    public void AddResponsiblePerson_ReturnsError_WhenAlreadyExists()
+    public void AssignUser_ReturnsError_WhenAlreadyExists()
     {
         Chore chore = CreateTestChore();
         User user = CreateTestUser();
 
-        chore.AddResponsiblePerson(user);
-        Result result = chore.AddResponsiblePerson(user);
+        chore.AssignUser(user);
+        Result result = chore.AssignUser(user);
 
         result.IsFailure.Should().BeTrue();
         result.Error.Code.Should().Be(ChoreErrors.UserExists.Code);
     }
 
     [Fact]
-    public void RemoveResponsiblePerson_RemovesResponsiblePerson_WhenSuccessful()
+    public void UnassignUser_RemovesResponsiblePerson_WhenSuccessful()
     {
         Chore chore = CreateTestChore();
         User user = CreateTestUser();
 
-        chore.AddResponsiblePerson(user);
+        chore.AssignUser(user);
 
-        Result result = chore.RemoveResponsiblePerson(user.Id);
+        Result result = chore.UnassignUser(user.Id);
 
         result.IsSuccess.Should().BeTrue();
-        chore.ResponsiblePersons.Count.Should().Be(0);
+        chore.Assignees.Count.Should().Be(0);
     }
 
     [Fact]
-    public void RemoveResponsiblePerson_RaisesDomainEvent_WhenSuccessful()
+    public void UnassignUser_RaisesDomainEvent_WhenSuccessful()
     {
         Chore chore = CreateTestChore();
         User user = CreateTestUser();
 
-        chore.AddResponsiblePerson(user);
-        chore.RemoveResponsiblePerson(user.Id);
+        chore.AssignUser(user);
+        chore.UnassignUser(user.Id);
 
         var domainEvent = AssertDomainEventWasRaised<ChoreUserRemovedDomainEvent>(chore);
 
@@ -259,10 +260,10 @@ public class ChoreTests : BaseTest
     }
 
     [Fact]
-    public void RemoveResponsiblePerson_ReturnsError_WhenNotFound()
+    public void UnassignUser_ReturnsError_WhenNotFound()
     {
         Chore chore = CreateTestChore();
-        Result result = chore.RemoveResponsiblePerson(Guid.CreateVersion7());
+        Result result = chore.UnassignUser(Guid.CreateVersion7());
 
         result.IsFailure.Should().BeTrue();
         result.Error.Code.Should().Be(ChoreErrors.UserNotExists.Code);

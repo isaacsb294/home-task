@@ -18,7 +18,7 @@ public sealed class ChoreConfiguration : IEntityTypeConfiguration<Chore>
             .WithOne()
             .HasForeignKey(product => product.ChoreId);
 
-        builder.HasMany(chore => chore.ResponsiblePersons)
+        builder.HasMany(chore => chore.Assignees)
             .WithMany()
             .UsingEntity<ChoreUser>();
 

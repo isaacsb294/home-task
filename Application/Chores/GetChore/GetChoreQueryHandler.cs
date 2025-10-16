@@ -19,11 +19,11 @@ public class GetChoreQueryHandler(
             .AsNoTracking()
             .Include(x => x.Products)
             .AsNoTracking()
-            .Include(x => x.ResponsiblePersons)
+            .Include(x => x.Assignees)
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == query.ChoreId,  cancellationToken);
 
-        if (chore?.ResponsiblePersons.FirstOrDefault(rp => rp.Id == userContext.UserId) is null ||
+        if (chore?.Assignees.FirstOrDefault(rp => rp.Id == userContext.UserId) is null ||
             chore.UserId != userContext.UserId)
         {
             return Result.Failure<Chore>(ChoreErrors.NotFound);

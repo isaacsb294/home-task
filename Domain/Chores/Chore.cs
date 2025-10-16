@@ -8,7 +8,7 @@ namespace Domain.Chores;
 public class Chore : Entity
 {
     private readonly List<Product> _products = [];
-    private readonly List<User> _responsiblePersons = [];
+    private readonly List<User> _assignees = [];
     
     private Chore()
     {
@@ -23,7 +23,7 @@ public class Chore : Entity
     public ChoreCategory? Category { get; private set; }
     public DayOfWeek? DayOfWeek { get; private set; }
     public IReadOnlyCollection<Product> Products => _products.AsReadOnly();
-    public IReadOnlyCollection<User> ResponsiblePersons => _responsiblePersons.AsReadOnly();
+    public IReadOnlyCollection<User> Assignees => _assignees.AsReadOnly();
 
     public static Result<Chore> Create(
         Guid userId,
@@ -63,7 +63,25 @@ public class Chore : Entity
         return chore;
     }
 
-    public Result AddProduct(
+    public Result EditChoreInformation(
+        string? name,
+        string? description,
+        ChorePriority? priority,
+        ChoreFrequency? frequency,
+        ChoreCategory? category,
+        DayOfWeek? dayOfWeek)
+    {
+        Name = name ?? Name;
+        Description = description ?? Description;
+        Priority = priority ?? Priority;
+        Frequency = frequency ?? Frequency;
+        Category = category ?? Category;
+        DayOfWeek = dayOfWeek ?? DayOfWeek;
+
+        return Result.Success();
+    }
+
+    public Result<Product> AddProduct(
         string name,
         string link,
         Price lastKnownPrice)
@@ -83,7 +101,7 @@ public class Chore : Entity
         
         Raise(new ChoreProductAddedDomainEvent(Id, result.Value.Id));
         
-        return Result.Success();
+        return result.Value;
     }
 
     public Result RemoveProduct(Guid productId)
@@ -102,30 +120,30 @@ public class Chore : Entity
         return Result.Success();
     }
 
-    public Result AddResponsiblePerson(User user)
+    public Result AssignUser(User user)
     {
-        if (_responsiblePersons.FirstOrDefault(p => p.Id == user.Id) is not null)
+        if (_assignees.FirstOrDefault(p => p.Id == user.Id) is not null)
         {
             return Result.Failure(ChoreErrors.UserExists);
         }
         
-        _responsiblePersons.Add(user);
+        _assignees.Add(user);
         
         Raise(new ChoreUserAddedDomainEvent(Id, user.Id));
         
         return Result.Success();
     }
 
-    public Result RemoveResponsiblePerson(Guid userId)
+    public Result UnassignUser(Guid userId)
     {
-        User? toRemove = _responsiblePersons.FirstOrDefault(p => p.Id == userId);
+        User? toRemove = _assignees.FirstOrDefault(p => p.Id == userId);
         
         if (toRemove is  null)
         {
             return Result.Failure(ChoreErrors.UserNotExists);
         }
         
-        _responsiblePersons.Remove(toRemove);
+        _assignees.Remove(toRemove);
         
         Raise(new ChoreUserRemovedDomainEvent(Id, userId));
         

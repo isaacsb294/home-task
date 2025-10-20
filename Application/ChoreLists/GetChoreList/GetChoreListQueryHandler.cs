@@ -8,8 +8,7 @@ using Shared;
 namespace Application.ChoreLists.GetChoreList;
 
 public class GetChoreListQueryHandler(
-    IApplicationDbContext context,
-    IUserContext userContext) : IQueryHandler<GetChoreListQuery, ChoreList>
+    IApplicationDbContext context) : IQueryHandler<GetChoreListQuery, ChoreList>
 {
     public async Task<Result<ChoreList>> HandleAsync(GetChoreListQuery query, CancellationToken cancellationToken = default)
     {
@@ -17,7 +16,7 @@ public class GetChoreListQueryHandler(
             .AsNoTracking()
             .FirstOrDefaultAsync(cl => cl.Id == query.ChoreListId, cancellationToken);
 
-        if (choreList is null || choreList.UserId != userContext.UserId)
+        if (choreList is null)
         {
             return Result.Failure<ChoreList>(ChoreListErrors.NotFound);
         }

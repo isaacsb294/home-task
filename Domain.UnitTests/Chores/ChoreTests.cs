@@ -31,7 +31,7 @@ public class ChoreTests : BaseTest
             ChoreData.ChoreListId,
             ChoreData.Name,
             ChoreData.Description,
-            null,
+            ChoreData.DayOfWeek,
             null,
             null,
             null);
@@ -50,7 +50,7 @@ public class ChoreTests : BaseTest
             ChoreData.ChoreListId,
             "",
             "",
-            null,
+            DayOfWeek.Monday,
             null,
             null,
             null);
@@ -67,7 +67,7 @@ public class ChoreTests : BaseTest
             ChoreData.ChoreListId,
             ChoreData.Name,
             "",
-            null,
+            DayOfWeek.Monday,
             null,
             null,
             null);

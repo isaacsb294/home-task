@@ -1,5 +1,4 @@
-﻿using Application.Abstractions.Auth;
-using Application.Abstractions.Database;
+﻿using Application.Abstractions.Database;
 using Application.Abstractions.Messaging;
 using Domain.Chores;
 using Domain.ChoreUsers;
@@ -10,8 +9,7 @@ using Shared;
 namespace Application.Chores.UnassignUser;
 
 public class UnassignUserCommandHandler(
-    IApplicationDbContext dbContext,
-    IUserContext userContext) : ICommandHandler<UnassignUserCommand>
+    IApplicationDbContext dbContext) : ICommandHandler<UnassignUserCommand>
 {
     public async Task<Result> HandleAsync(UnassignUserCommand command, CancellationToken cancellationToken = default)
     {
@@ -19,7 +17,7 @@ public class UnassignUserCommandHandler(
             .Include(c => c.Assignees)
             .FirstOrDefaultAsync(chore => chore.Id == command.ChoreId, cancellationToken);
 
-        if (chore is null || chore.UserId != userContext.UserId)
+        if (chore is null)
         {
             return Result.Failure(ChoreErrors.NotFound);
         }

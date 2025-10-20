@@ -1,7 +1,0 @@
-﻿services:
-  hometask:
-    image: hometask
-    build:
-      context: .
-      dockerfile: Dockerfile
-

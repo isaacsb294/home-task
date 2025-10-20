@@ -49,7 +49,7 @@ public class ApplicationDbContext(
                 return domainEvents;
             })
             .ToList();
-
+        
         await domainEventsDispatcher.DispatchAsync(domainEvents);
     }
 }

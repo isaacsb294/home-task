@@ -1,5 +1,4 @@
-﻿using Application.Abstractions.Auth;
-using Application.Abstractions.Database;
+﻿using Application.Abstractions.Database;
 using Application.Abstractions.Messaging;
 using Domain.Chores;
 using Domain.Products;
@@ -8,20 +7,20 @@ using Shared;
 namespace Application.Chores.AddProduct;
 
 public class AddProductCommandHandler(
-    IApplicationDbContext dbContext,
-    IUserContext userContext) : ICommandHandler<AddProductCommand, Guid>
+    IApplicationDbContext dbContext) : ICommandHandler<AddProductCommand, Guid>
 {
-    public async Task<Result<Guid>> HandleAsync(AddProductCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result<Guid>> HandleAsync(AddProductCommand command,
+        CancellationToken cancellationToken = default)
     {
         Chore? chore = dbContext.Chores.FirstOrDefault(c => c.Id == command.ChoreId);
 
-        if (chore is null ||  chore.UserId != userContext.UserId)
+        if (chore is null)
         {
             return Result.Failure<Guid>(ChoreErrors.NotFound);
         }
 
         var price = new Price(command.PriceAmount, Currency.FromCode(command.PriceCurrencyCode));
-        
+
         Result<Product> result = chore.AddProduct(
             command.Name,
             command.Link,
@@ -33,9 +32,9 @@ public class AddProductCommandHandler(
         }
 
         dbContext.Products.Add(result.Value);
-        
+
         await dbContext.SaveChangesAsync(cancellationToken);
-        
+
         return result.Value.Id;
     }
 }

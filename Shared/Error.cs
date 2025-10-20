@@ -15,4 +15,6 @@ public record Error
     public static readonly Error NullValue = new("Error.NullValue", "Null value provided");
     public static Error NotFound(string message) =>
         new("Error.NotFound", message);
+    public static Error Problem(string message) =>
+        new("Error.Problem", message);
 };

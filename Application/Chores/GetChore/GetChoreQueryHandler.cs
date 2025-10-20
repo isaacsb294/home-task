@@ -8,8 +8,7 @@ using Shared;
 namespace Application.Chores.GetChore;
 
 public class GetChoreQueryHandler(
-    IApplicationDbContext dbContext,
-    IUserContext userContext) : IQueryHandler<GetChoreQuery, Chore>
+    IApplicationDbContext dbContext) : IQueryHandler<GetChoreQuery, Chore>
 {
     public async Task<Result<Chore>> HandleAsync(
         GetChoreQuery query,
@@ -23,11 +22,16 @@ public class GetChoreQueryHandler(
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == query.ChoreId,  cancellationToken);
 
-        if (chore?.Assignees.FirstOrDefault(rp => rp.Id == userContext.UserId) is null ||
-            chore.UserId != userContext.UserId)
+        if (chore == null)
         {
             return Result.Failure<Chore>(ChoreErrors.NotFound);
         }
+
+        // if (chore?.Assignees.FirstOrDefault(rp => rp.Id == userContext.UserId) is null ||
+        //     chore.UserId != userContext.UserId)
+        // {
+        //     return Result.Failure<Chore>(ChoreErrors.NotFound);
+        // }
 
         return chore;
     }

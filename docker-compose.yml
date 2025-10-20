@@ -1,0 +1,22 @@
+services:
+  hometask.api:
+    image: ${DOCKER_REGISTRY-}hometaskapi
+    container_name: HomeTask.Api
+    depends_on:
+      - home-task-db
+    build:
+      context: .
+      dockerfile: HomeTask.Api/Dockerfile
+  
+  home-task-db:
+    image: postgres:latest
+    container_name: HomeTask.Db
+    environment:
+      - POSTGRES_DB=home-task
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - ./.containers/postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"

@@ -10,8 +10,7 @@ using Shared;
 namespace Application.Chores.AssignUser;
 
 public class AssignUserCommandHandler(
-    IApplicationDbContext dbContext,
-    IUserContext userContext) : ICommandHandler<AssignUserCommand>
+    IApplicationDbContext dbContext) : ICommandHandler<AssignUserCommand>
 {
     public async Task<Result> HandleAsync(AssignUserCommand command, CancellationToken cancellationToken)
     {
@@ -19,14 +18,14 @@ public class AssignUserCommandHandler(
             .Include(c => c.Assignees)
             .FirstOrDefaultAsync(c => c.Id == command.ChoreId, cancellationToken);
 
-        if (chore is null || chore.UserId != userContext.UserId)
+        if (chore is null)
         {
             return Result.Failure(ChoreErrors.NotFound);
         }
         
         User? user = await dbContext.Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id == userContext.UserId, cancellationToken);
+            .FirstOrDefaultAsync(u => u.Id == command.UserId, cancellationToken);
 
         if (user is null)
         {

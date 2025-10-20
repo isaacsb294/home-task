@@ -8,8 +8,7 @@ using Shared;
 namespace Application.Users.GetUser;
 
 public class GetUserQueryHandler(
-    IApplicationDbContext dbContext,
-    IUserContext userContext) : IQueryHandler<GetUserQuery, User>
+    IApplicationDbContext dbContext) : IQueryHandler<GetUserQuery, User>
 {
     public async Task<Result<User>> HandleAsync(GetUserQuery query, CancellationToken cancellationToken = default)
     {
@@ -17,7 +16,7 @@ public class GetUserQueryHandler(
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == query.UserId, cancellationToken);
  
-        if (user is null || user.Id != userContext.UserId)
+        if (user is null)
         {
             return Result.Failure<User>(UserErrors.NotFound);
         }

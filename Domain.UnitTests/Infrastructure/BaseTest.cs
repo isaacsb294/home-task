@@ -19,10 +19,10 @@ public abstract class BaseTest
             ChoreData.ChoreListId,
             ChoreData.Name,
             ChoreData.Description,
+            ChoreData.DayOfWeek,
             ChoreData.Priority,
             ChoreData.Frequency,
-            ChoreData.Category,
-            ChoreData.DayOfWeek);
+            ChoreData.Category);
 
         return result.Value;
     }

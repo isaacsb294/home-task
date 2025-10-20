@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.Messaging;
 using Domain.Chores;
+using Shared;
 
 namespace Application.Chores.SearchChores;
 
@@ -8,4 +9,5 @@ public record SearchChoresQuery(
     ChorePriority? Priority,
     ChoreFrequency? Frequency,
     ChoreCategory? Category,
-    DayOfWeek? DayOfWeek) : IQuery;
+    DayOfWeek? DayOfWeek,
+    PaginationParams? PaginationParams) : IQuery;

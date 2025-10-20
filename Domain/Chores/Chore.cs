@@ -20,8 +20,8 @@ public class Chore : Entity
     public string Description { get; private set; } = string.Empty;
     public ChorePriority Priority { get; private set; }
     public ChoreFrequency Frequency { get; private set; }
-    public ChoreCategory? Category { get; private set; }
-    public DayOfWeek? DayOfWeek { get; private set; }
+    public ChoreCategory Category { get; private set; }
+    public DayOfWeek DayOfWeek { get; private set; }
     public IReadOnlyCollection<Product> Products => _products.AsReadOnly();
     public IReadOnlyCollection<User> Assignees => _assignees.AsReadOnly();
 
@@ -30,10 +30,10 @@ public class Chore : Entity
         Guid choreListId,
         string name,
         string description,
+        DayOfWeek dayOfWeek,
         ChorePriority? priority,
         ChoreFrequency? frequency,
-        ChoreCategory? category,
-        DayOfWeek? dayOfWeek)
+        ChoreCategory? category)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -54,7 +54,7 @@ public class Chore : Entity
             Description = description,
             Priority = priority ?? ChorePriority.Low,
             Frequency = frequency ?? ChoreFrequency.Daily,
-            Category = category,
+            Category = category ?? ChoreCategory.Home,
             DayOfWeek = dayOfWeek
         };
 

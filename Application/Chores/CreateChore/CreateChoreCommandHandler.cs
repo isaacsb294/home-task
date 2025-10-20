@@ -10,8 +10,7 @@ using Shared;
 namespace Application.Chores.CreateChore;
 
 public class CreateChoreCommandHandler(
-    IApplicationDbContext dbContext,
-    IUserContext userContext) : ICommandHandler<CreateChoreCommand, Guid>
+    IApplicationDbContext dbContext) : ICommandHandler<CreateChoreCommand, Guid>
 {
     public async Task<Result<Guid>> HandleAsync(CreateChoreCommand command,
         CancellationToken cancellationToken = default)
@@ -20,7 +19,7 @@ public class CreateChoreCommandHandler(
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == command.UserId, cancellationToken);
 
-        if (user is null || user.Id != userContext.UserId)
+        if (user is null)
         {
             return Result.Failure<Guid>(UserErrors.NotFound);
         }
@@ -40,10 +39,10 @@ public class CreateChoreCommandHandler(
             command.ChoreListId,
             command.Name,
             command.Description,
+            command.DayOfWeek,
             command.Priority,
             command.Frequency,
-            command.Category,
-            command.DayOfWeek);
+            command.Category);
 
         if (result.IsFailure)
         {

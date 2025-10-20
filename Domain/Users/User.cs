@@ -13,6 +13,8 @@ public class User : Entity
     public string FirstName { get; private set; } = string.Empty;
     public string LastName { get; private set; } = string.Empty;
     public MailAddress Email { get; private set; } = null!;
+    
+    public Guid IdentityId { get; private set; } = Guid.Empty;
 
     public static User Create(
         string firstName,

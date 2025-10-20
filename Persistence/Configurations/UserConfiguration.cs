@@ -1,4 +1,5 @@
-﻿using Domain.Users;
+﻿using System.Net.Mail;
+using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,6 +13,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasKey(user => user.Id);
         
         builder.HasIndex(user => user.Email).IsUnique();
+        
+        builder.Property(user => user.Email)
+            .HasConversion(
+                email => email.ToString(), 
+                email => new MailAddress(email));
         
         builder.Property(user => user.Email).HasMaxLength(320);
     }

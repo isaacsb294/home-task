@@ -1,5 +1,4 @@
-﻿using Application.Abstractions.Auth;
-using Application.Abstractions.Database;
+﻿using Application.Abstractions.Database;
 using Application.Abstractions.Messaging;
 using Domain.ChoreLists;
 using Microsoft.EntityFrameworkCore;
@@ -8,19 +7,21 @@ using Shared;
 namespace Application.ChoreLists.GetChoreList;
 
 public class GetChoreListQueryHandler(
-    IApplicationDbContext context) : IQueryHandler<GetChoreListQuery, ChoreList>
+    IApplicationDbContext context) : IQueryHandler<GetChoreListQuery, ChoreListDto>
 {
-    public async Task<Result<ChoreList>> HandleAsync(GetChoreListQuery query, CancellationToken cancellationToken = default)
+    public async Task<Result<ChoreListDto>> HandleAsync(GetChoreListQuery query,
+        CancellationToken cancellationToken = default)
     {
-        ChoreList? choreList = await context.ChoreLists
+        ChoreListDto? choreListDto = await context.ChoreLists
             .AsNoTracking()
+            .Select(choreList => choreList.ToDto())
             .FirstOrDefaultAsync(cl => cl.Id == query.ChoreListId, cancellationToken);
 
-        if (choreList is null)
+        if (choreListDto is null)
         {
-            return Result.Failure<ChoreList>(ChoreListErrors.NotFound);
+            return Result.Failure<ChoreListDto>(ChoreListErrors.NotFound);
         }
 
-        return choreList;
+        return choreListDto;
     }
 }

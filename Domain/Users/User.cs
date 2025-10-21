@@ -6,6 +6,8 @@ namespace Domain.Users;
 
 public class User : Entity
 {
+    private readonly List<Role> _roles = [];
+    
     private User()
     {
     }
@@ -14,7 +16,9 @@ public class User : Entity
     public string LastName { get; private set; } = string.Empty;
     public MailAddress Email { get; private set; } = null!;
     
-    public Guid IdentityId { get; private set; } = Guid.Empty;
+    public string IdentityId { get; private set; } = string.Empty;
+
+    public IReadOnlyCollection<Role> Roles => _roles.AsReadOnly();
 
     public static User Create(
         string firstName,
@@ -30,7 +34,14 @@ public class User : Entity
         };
 
         user.Raise(new UserCreatedDomainEvent(user.Id));
+        
+        user._roles.Add(Role.Registered);
 
         return user;
+    }
+    
+    public void SetIdentityId(string identityId)
+    {
+        IdentityId = identityId;
     }
 }

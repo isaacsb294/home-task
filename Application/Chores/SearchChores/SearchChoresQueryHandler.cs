@@ -1,4 +1,5 @@
-﻿using Application.Abstractions.Database;
+﻿using Application.Abstractions.Auth;
+using Application.Abstractions.Database;
 using Application.Abstractions.Messaging;
 using Application.Pagination;
 using Domain.Chores;
@@ -8,7 +9,8 @@ using Shared;
 namespace Application.Chores.SearchChores;
 
 public class SearchChoresQueryHandler(
-    IApplicationDbContext dbContext) : IQueryHandler<SearchChoresQuery, PaginationResult<ChoreDto>>
+    IApplicationDbContext dbContext,
+    IUserContext userContext) : IQueryHandler<SearchChoresQuery, PaginationResult<ChoreDto>>
 {
     public async Task<Result<PaginationResult<ChoreDto>>> HandleAsync(
         SearchChoresQuery query,
@@ -20,6 +22,7 @@ public class SearchChoresQueryHandler(
             .AsNoTracking()
             .Include(c => c.Products)
             .AsNoTracking()
+            .Where(c => c.UserId == userContext.UserId)
             .Where(c => query.Name == null ||
                         c.Name.Contains(query.Name, StringComparison.CurrentCultureIgnoreCase))
             .Where(c => query.Priority == null || c.Priority == query.Priority)
@@ -29,8 +32,8 @@ public class SearchChoresQueryHandler(
 
         PaginationResult<ChoreDto> paginationResult = await PaginationService.GetResultAsync(
             choresQueryable,
-            query.PaginationParams ?? PaginationParams.Default ,
-            ChoreQueryableExpressions.ProjectToDto(),
+            query.PaginationParams ?? PaginationParams.Default,
+            chore => chore.ToDto(),
             cancellationToken);
 
         return paginationResult;

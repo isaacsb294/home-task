@@ -20,5 +20,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                 email => new MailAddress(email));
         
         builder.Property(user => user.Email).HasMaxLength(320);
+
+        builder.HasIndex(user => user.IdentityId).IsUnique();
     }
 }

@@ -4,7 +4,6 @@ using Domain.Chores;
 namespace Application.Chores.CreateChore;
 
 public record CreateChoreCommand(
-    Guid UserId,
     Guid ChoreListId,
     string Name,
     string Description,

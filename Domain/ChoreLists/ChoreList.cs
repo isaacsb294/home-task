@@ -1,4 +1,5 @@
 ﻿using Domain.ChoreLists.Events;
+using Domain.Chores;
 using Shared;
 
 namespace Domain.ChoreLists;
@@ -25,7 +26,7 @@ public class ChoreList : Entity
             throw new ArgumentNullException(nameof(description));
         }
 
-        var taskList = new ChoreList
+        var choreList = new ChoreList
         {
             Id = Guid.CreateVersion7(),
             UserId = userId,
@@ -33,8 +34,8 @@ public class ChoreList : Entity
             Description = description
         };
 
-        taskList.Raise(new ChoreListCreatedDomainEvent(taskList.Id));
+        choreList.Raise(new ChoreListCreatedDomainEvent(choreList.Id));
 
-        return taskList;
+        return choreList;
     }
 }

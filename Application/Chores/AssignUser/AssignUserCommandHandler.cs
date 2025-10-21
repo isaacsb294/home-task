@@ -10,7 +10,8 @@ using Shared;
 namespace Application.Chores.AssignUser;
 
 public class AssignUserCommandHandler(
-    IApplicationDbContext dbContext) : ICommandHandler<AssignUserCommand>
+    IApplicationDbContext dbContext,
+    IUserContext userContext) : ICommandHandler<AssignUserCommand>
 {
     public async Task<Result> HandleAsync(AssignUserCommand command, CancellationToken cancellationToken)
     {
@@ -18,7 +19,7 @@ public class AssignUserCommandHandler(
             .Include(c => c.Assignees)
             .FirstOrDefaultAsync(c => c.Id == command.ChoreId, cancellationToken);
 
-        if (chore is null)
+        if (chore is null || chore.UserId != userContext.UserId)
         {
             return Result.Failure(ChoreErrors.NotFound);
         }

@@ -6,7 +6,6 @@ public class CreateChoreCommandValidator : AbstractValidator<CreateChoreCommand>
 {
     public CreateChoreCommandValidator()
     {
-        RuleFor(x => x.UserId).NotEmpty();
         RuleFor(x => x.ChoreListId).NotEmpty();
         RuleFor(x => x.Name).NotEmpty();
         RuleFor(x => x.Description).NotEmpty();

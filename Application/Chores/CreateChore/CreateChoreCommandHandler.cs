@@ -10,14 +10,15 @@ using Shared;
 namespace Application.Chores.CreateChore;
 
 public class CreateChoreCommandHandler(
-    IApplicationDbContext dbContext) : ICommandHandler<CreateChoreCommand, Guid>
+    IApplicationDbContext dbContext,
+    IUserContext userContext) : ICommandHandler<CreateChoreCommand, Guid>
 {
     public async Task<Result<Guid>> HandleAsync(CreateChoreCommand command,
         CancellationToken cancellationToken = default)
     {
         User? user = await dbContext.Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id == command.UserId, cancellationToken);
+            .FirstOrDefaultAsync(u => u.Id == userContext.UserId, cancellationToken);
 
         if (user is null)
         {
@@ -29,13 +30,13 @@ public class CreateChoreCommandHandler(
                 .AsNoTracking()
                 .FirstOrDefaultAsync(l => l.UserId == user.Id, cancellationToken);
 
-        if (choreList is null)
+        if (choreList is null || choreList.UserId != userContext.UserId)
         {
             return Result.Failure<Guid>(ChoreListErrors.NotFound);
         }
 
         Result<Chore> result = Chore.Create(
-            command.UserId,
+            userContext.UserId,
             command.ChoreListId,
             command.Name,
             command.Description,

@@ -18,6 +18,7 @@ public interface IApplicationDbContext
     DbSet<Comment> Comments { get; }
     DbSet<Product> Products { get; }
     DbSet<User> Users { get; }
+    DbSet<Role> Roles { get; }
     
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

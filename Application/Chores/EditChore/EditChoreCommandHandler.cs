@@ -21,18 +21,13 @@ public class EditChoreCommandHandler(
             return Result.Failure(ChoreErrors.NotFound);
         }
 
-        Result result = chore.EditChoreInformation(
+        chore.EditChoreInformation(
             command.Name,
             command.Description,
             command.Priority,
             command.Frequency,
             command.Category,
             command.DayOfWeek);
-
-        if (result.IsFailure)
-        {
-            return result;
-        }
 
         await dbContext.SaveChangesAsync(cancellationToken);
 

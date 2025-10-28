@@ -1,0 +1,530 @@
+{
+	"info": {
+		"_postman_id": "b33cadc0-3659-40e3-9619-13a919d5a3f8",
+		"name": "HomeTask",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45083852",
+		"_collection_link": "https://ben-8276846.postman.co/workspace/Ben's-Workspace~05df515e-97dc-49aa-8d5f-2cbf34e2affe/collection/45083852-b33cadc0-3659-40e3-9619-13a919d5a3f8?action=share&source=collection_link&creator=45083852"
+	},
+	"item": [
+		{
+			"name": "Chores",
+			"item": [
+				{
+					"name": "Get Chores",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/api/chores",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"chores"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "dayOfWeek",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "priority",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "frequency",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Chore",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/chores/:choreId",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"chores",
+								":choreId"
+							],
+							"variable": [
+								{
+									"key": "choreId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Chore",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"choreListId\": \"\",\r\n    \"name\": \"\",\r\n    \"description\":\"\",\r\n    \"dayOfWeek\":\"\",\r\n    \"priority\":\"\",\r\n    \"frequency\":\"\",\r\n    \"category\":\"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/chores",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"chores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": \"019a2581-47be-7685-a6c8-8173be002fa0\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/chores/:choreId/assignees",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"chores",
+								":choreId",
+								"assignees"
+							],
+							"variable": [
+								{
+									"key": "choreId",
+									"value": "019a2558-f0da-7691-8b93-34d349eb1c5d"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unassign User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/chores/:choreId/assignees/:userId",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"chores",
+								":choreId",
+								"assignees",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "choreId",
+									"value": "019a2558-f0da-7691-8b93-34d349eb1c5d"
+								},
+								{
+									"key": "userId",
+									"value": "019a2581-47be-7685-a6c8-8173be002fa0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"\",\r\n    \"link\": \"\",\r\n    \"priceAmount\": 0,\r\n    \"priceCurrencyCode\": \"GBP\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/chores/:choreId/products",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"chores",
+								":choreId",
+								"products"
+							],
+							"variable": [
+								{
+									"key": "choreId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/chores/:chorId/products/:productId",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"chores",
+								":chorId",
+								"products",
+								":productId"
+							],
+							"variable": [
+								{
+									"key": "chorId",
+									"value": ""
+								},
+								{
+									"key": "productId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"isaacsb294@gmail.com\",\r\n    \"firstName\": \"Ben\",\r\n    \"lastName\": \"Isaacs\",\r\n    \"password\": \"abcd1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/users/register",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response body as JSON",
+									"let jsonData;",
+									"try {",
+									"    jsonData = pm.response.json();",
+									"} catch (e) {",
+									"    pm.test(\"Response body is valid JSON\", function () {",
+									"        pm.expect.fail(\"Response body is not valid JSON\");",
+									"    });",
+									"}",
+									"",
+									"// Check for presence of 'accessToken' and set as collection variable",
+									"pm.test(\"Response contains accessToken\", function () {",
+									"    pm.expect(jsonData).to.have.property('accessToken');",
+									"    pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Email\": \"isaacsb294@gmail.com\",\r\n    \"Password\": \"abcd1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/users/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Self",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/users/self",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"self"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh User Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/users/refresh",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ChoreLists",
+			"item": [
+				{
+					"name": "Create Chore List",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Autumn Garden Tasks\",\r\n    \"description\": \"Things to do in the Autumn\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/choreLists",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"choreLists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Chore Lists",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/choreLists",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"choreLists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Chore List",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": null,\r\n    \"description\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/choreLists/:choreListId",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"choreLists",
+								":choreListId"
+							],
+							"variable": [
+								{
+									"key": "choreListId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Chore List",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/choreLists/:choreListId",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"choreLists",
+								":choreListId"
+							],
+							"variable": [
+								{
+									"key": "choreListId",
+									"value": "019a08a0-7b73-7a7d-b470-13c79adc27fd"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": ""
+		},
+		{
+			"key": "accessToken",
+			"value": ""
+		}
+	]
+}

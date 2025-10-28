@@ -15,6 +15,11 @@ public class AssignUserCommandHandler(
 {
     public async Task<Result> HandleAsync(AssignUserCommand command, CancellationToken cancellationToken)
     {
+        if (command.UserId == userContext.UserId)
+        {
+            return Result.Failure(ChoreErrors.CannotAssignSelf);
+        }
+        
         Chore? chore = await dbContext.Chores
             .Include(c => c.Assignees)
             .FirstOrDefaultAsync(c => c.Id == command.ChoreId, cancellationToken);

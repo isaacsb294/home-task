@@ -63,7 +63,7 @@ public class Chore : Entity
         return chore;
     }
 
-    public Result EditChoreInformation(
+    public void EditChoreInformation(
         string? name,
         string? description,
         ChorePriority? priority,
@@ -77,8 +77,6 @@ public class Chore : Entity
         Frequency = frequency ?? Frequency;
         Category = category ?? Category;
         DayOfWeek = dayOfWeek ?? DayOfWeek;
-
-        return Result.Success();
     }
 
     public Result<Product> AddProduct(

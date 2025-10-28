@@ -19,11 +19,11 @@ public class ClaimsTransformation(IServiceProvider serviceProvider) : IClaimsTra
 
         using IServiceScope scope = serviceProvider.CreateScope();
 
-        var authenticationService = scope.ServiceProvider.GetRequiredService<AuthorizationService>();
+        var authorizationService = scope.ServiceProvider.GetRequiredService<AuthorizationService>();
 
         string identityId = principal.GetIdentityId();
 
-        UserRolesResponse userRoles = await authenticationService.GetRolesForUserAsync(identityId);
+        UserRolesResponse userRoles = await authorizationService.GetRolesForUserAsync(identityId);
 
         var claimsIdentity = new ClaimsIdentity();
 

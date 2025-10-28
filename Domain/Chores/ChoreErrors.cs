@@ -27,6 +27,10 @@ public static class ChoreErrors
     public static readonly Error UserNotExists = new(
         "Chore.UserNotExists", 
         "This user is not a responsible person for the chore.");
+    
+    public static readonly Error CannotAssignSelf = new(
+        "Chore.CannotAssignSelf", 
+        "You are already responsible for this chore.");
 
     public static readonly Error NotFound = new(
         "Chore.NotFound", 

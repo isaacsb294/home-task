@@ -8,9 +8,9 @@ public class EditChoreCommandValidator : AbstractValidator<EditChoreCommand>
     {
         RuleFor(x => x.ChoreId).NotEmpty();
         
-        RuleFor(x => x.Priority).IsInEnum();
-        RuleFor(x => x.Frequency).IsInEnum();
-        RuleFor(x => x.Category).IsInEnum();
-        RuleFor(x => x.DayOfWeek).IsInEnum();
+        RuleFor(x => x.Priority).IsInEnum().When(p => p is not null);
+        RuleFor(x => x.Frequency).IsInEnum().When(f => f is not null);
+        RuleFor(x => x.Category).IsInEnum().When(c => c is not null);
+        RuleFor(x => x.DayOfWeek).IsInEnum().When(dw => dw is not null);
     }
 }

@@ -12,5 +12,6 @@ public sealed class ChoreDto
     public ChoreFrequency Frequency { get; init; }
     public ChoreCategory Category { get; init; }
     public DayOfWeek DayOfWeek { get; init; }
+    public List<ProductDto> Products { get; init; } = [];
     public List<UserDto> Assignees { get; init; } = [];
 };

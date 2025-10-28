@@ -7,7 +7,7 @@ public record EditChoreCommand(
     Guid ChoreId, 
     string? Name, 
     string? Description,
+    DayOfWeek? DayOfWeek,
     ChorePriority? Priority,
     ChoreFrequency? Frequency,
-    ChoreCategory? Category,
-    DayOfWeek? DayOfWeek) : ICommand;
+    ChoreCategory? Category) : ICommand;

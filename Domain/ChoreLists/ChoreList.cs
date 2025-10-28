@@ -38,4 +38,10 @@ public class ChoreList : Entity
 
         return choreList;
     }
+
+    public void EditDetails(string? name, string? description)
+    {
+        Name = name ?? Name;
+        Description = description ?? Description;
+    }
 }

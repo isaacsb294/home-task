@@ -1,6 +1,8 @@
 ﻿using Application.Abstractions.Messaging;
 using Application.ChoreLists;
 using Application.ChoreLists.CreateChoreList;
+using Application.ChoreLists.DeleteChoreList;
+using Application.ChoreLists.EditChoreList;
 using Application.ChoreLists.GetChoreList;
 using Application.ChoreLists.GetChoreLists;
 using Microsoft.AspNetCore.Authorization;
@@ -50,7 +52,7 @@ public class ChoreListsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ChoreListDto>> Create(
+    public async Task<ActionResult<Guid>> Create(
         [FromBody] CreateChoreListRequest request,
         [FromServices] ICommandHandler<CreateChoreListCommand, Guid> commandHandler,
         CancellationToken cancellationToken)
@@ -65,5 +67,42 @@ public class ChoreListsController : ControllerBase
         }
 
         return CreatedAtAction(nameof(GetChoreList), new { choreListId = result.Value }, result.Value);
+    }
+
+    [HttpPut("{choreListId:guid}")]
+    public async Task<IActionResult> Edit(
+        [FromRoute] Guid choreListId,
+        [FromBody] EditChoreListRequest request,
+        [FromServices] ICommandHandler<EditChoreListCommand> commandHandler,
+        CancellationToken cancellationToken)
+    {
+        var command = new EditChoreListCommand(choreListId, request.Name, request.Description);
+
+        Result result = await commandHandler.HandleAsync(command, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            return BadRequest(result.Error);
+        }
+
+        return NoContent();
+    }
+
+    [HttpDelete("{choreListId:guid}")]
+    public async Task<IActionResult> Delete(
+        [FromRoute] Guid choreListId,
+        [FromServices] ICommandHandler<DeleteChoreListCommand> commandHandler,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteChoreListCommand(choreListId);
+
+        Result result = await commandHandler.HandleAsync(command, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            return BadRequest(result.Error);
+        }
+
+        return NoContent();
     }
 }
